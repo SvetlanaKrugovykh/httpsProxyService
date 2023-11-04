@@ -52,7 +52,7 @@ for (const netData of data) {
         const combinedCert = `${certTarget.cert}${sourcePemCertificate}`
         if (DEBUG_LEVEL > 0) console.log(`Combined certificate:`, combinedCert)
         options.agent = new https.Agent({
-          cert: combinedCert,
+          pfx: Buffer.from(combinedCert, 'utf-8'),
         })
       }
       console.log(`Proxy request at ${currentTime}:`, req.url)
