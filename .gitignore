@@ -1,0 +1,8 @@
+data
+path
+.env*
+.vscode
+.idea
+.eslint*
+node_modules
+temp
