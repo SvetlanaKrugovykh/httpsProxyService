@@ -1,6 +1,18 @@
 const https = require('https')
 const dns = require('dns')
 
+async function derToPem(der) {
+  const base64 = Buffer.from(der).toString('base64')
+  let pem = '-----BEGIN CERTIFICATE-----\n'
+
+  for (let i = 0; i < base64.length; i += 64) {
+    pem += base64.slice(i, i + 64) + '\n'
+  }
+
+  pem += '-----END CERTIFICATE-----\n'
+  return pem
+}
+
 async function getCertificateFromSourceURL(rawHeaders) {
   const DEBUG_LEVEL = Number(process.env.DEBUG_LEVEL) || 0
   const port = 8181
@@ -26,19 +38,15 @@ async function getCertificateFromSourceURL(rawHeaders) {
     let cert
 
     address = await dns.promises.lookup(options.hostname, lookupOptions)
-    console.log(`IP address: ${address.address}`)
+    if (DEBUG_LEVEL > 0) console.log(`IP address: ${address.address}`)
 
-    let attempts = 3 // Количество попыток получения сертификата
+    let attempts = 3
     let certError
 
     do {
       const req = https.request(options, (res) => {
-        console.log('statusCode:', res.statusCode)
-        //console.log('headers:', res.headers)
-
         try {
           cert = res.socket.getPeerCertificate()
-          console.log('certificate:', cert)
         } catch (error) {
           certError = error
         }
@@ -68,4 +76,4 @@ async function getCertificateFromSourceURL(rawHeaders) {
   }
 }
 
-module.exports = getCertificateFromSourceURL 
+module.exports = { getCertificateFromSourceURL, derToPem }
