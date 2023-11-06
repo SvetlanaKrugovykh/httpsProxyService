@@ -42,20 +42,30 @@ for (const netData of data) {
 
   proxy.on('proxyReq', async function (proxyReq, req, res, options) {
     try {
+      proxyReq.ttpsetHeader('Cache-Control', 'no-store')
+      proxyReq.setHeader('Referrer-Policy', 'unsafe-url')
+      console.log(`Proxy request start at ${currentTime}:`, req.rawHeaders[1])
+      const destinationCerts = certTarget.cert
       const sourceCert = await getCertificateFromSourceURL(req.rawHeaders)
       if (DEBUG_LEVEL > 0) console.log(`Source certificate:`, sourceCert)
 
-      req.url = netData.target
+      res.setHeader('Referrer-Policy', 'unsafe-url')
+
+      if (DEBUG_LEVEL > 0) console.log(`Combined certificate:`, combinedCerts)
+      options.agent = new https.Agent({
+        pfx: Buffer.from(combinedCerts, 'utf-8'),
+      })
+
       if (sourceCert?.raw) {
-        const sourcePemCertificate = await derToPem(sourceCert.raw);
-        if (DEBUG_LEVEL > 0) console.log(sourcePemCertificate);
-        const combinedCert = `${certTarget.cert}${sourcePemCertificate}`
-        if (DEBUG_LEVEL > 0) console.log(`Combined certificate:`, combinedCert)
-        options.agent = new https.Agent({
-          pfx: Buffer.from(combinedCert, 'utf-8'),
-        })
+        const sourcePemCertificate = await derToPem(sourceCert.raw)
+        if (DEBUG_LEVEL > 0) console.log('sourcePemCertificate', sourcePemCertificate)
+
+        const combinedCerts = `${sourcePemCertificate}\n${destinationCerts}`
+        res.write(combinedCerts)
+
       }
-      console.log(`Proxy request at ${currentTime}:`, req.url)
+      res.end()
+      console.log(`Proxy request end at ${currentTime}:`, req.url)
     } catch (error) {
       console.error(`Error while getting source certificate:`, error);
     }

@@ -4,20 +4,20 @@ const dns = require('dns')
 async function derToPem(der) {
   const base64 = Buffer.from(der).toString('base64')
   let pem = '-----BEGIN CERTIFICATE-----\n'
-
-  for (let i = 0; i < base64.length; i += 64) {
-    pem += base64.slice(i, i + 64) + '\n'
-  }
-
-  pem += '-----END CERTIFICATE-----\n'
+  pem += base64.match(/.{1,64}/g).join('\n')
+  pem += '\n-----END CERTIFICATE-----\n'
   return pem
 }
 
+
 async function getCertificateFromSourceURL(rawHeaders) {
   const DEBUG_LEVEL = Number(process.env.DEBUG_LEVEL) || 0
+  const port0 = 8080
   const port = 8181
 
-  let website = rawHeaders[1].replace(`:${port}`, '')
+  const website0 = rawHeaders[1].replace(`:${port0}`, '')
+  let website = website0.replace(`:${port}`, '')
+
   if (DEBUG_LEVEL >= 3) {
     website = process.env.TEST_WEBSITE
   }
@@ -60,6 +60,7 @@ async function getCertificateFromSourceURL(rawHeaders) {
       req.end()
       await new Promise((resolve) => setTimeout(resolve, 1000))
       if (cert) {
+        if (DEBUG_LEVEL > 0) console.log(`Got certificate for ${website}:`, cert)
         return cert
       }
     } while (--attempts > 0)
