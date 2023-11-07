@@ -1,11 +1,10 @@
-const https = require(`https`)
-const httpProxy = require(`http-proxy`)
-require(`dotenv`).config()
-const { data, certProxy, certTarget } = require(`./data/netData.js`)
-const { getCertificateFromSourceURL, derToPem } = require(`./sourceCert.js`)
+const https = require('https')
+const httpProxy = require('http-proxy')
+require('dotenv').config()
+const { data, certProxy } = require('./data/netData.js')
+const { handleProxyRequest } = require('./services/proxyHandler.js')
 const DEBUG_LEVEL = Number(process.env.DEBUG_LEVEL) || 0
-const currentTime = new Date().toLocaleString('en-US', { dateStyle: `medium`, timeStyle: `short` })
-
+const currentTime = new Date().toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' })
 
 const credentialsProxy = { key: certProxy.key, cert: certProxy.cert }
 
@@ -18,7 +17,7 @@ for (const netData of data) {
   })
 
   const server = https.createServer(credentialsProxy, (req, res) => {
-    proxy.web(req, res, {
+    handleProxyRequest(proxy, req, res, {
       target: netData.target,
       port: netData.target_port,
       secure: true,
@@ -33,43 +32,12 @@ for (const netData of data) {
       console.error(`Server error at ${currentTime}:`, err)
     })
     proxy.on('error', function (err, req, res) {
-      console.error(`Proxy error at ${currentTime}:`, err);
-      if (err.code === `UNABLE_TO_VERIFY_LEAF_SIGNATURE`) {
-        console.error(`The root CA certificate might not be trusted.`);
+      console.error(`Proxy error at ${currentTime}:`, err)
+      if (err.code === 'UNABLE_TO_VERIFY_LEAF_SIGNATURE') {
+        console.error('The root CA certificate might not be trusted.')
       }
     })
   }
-
-  proxy.on('proxyReq', async function (proxyReq, req, res, options) {
-    try {
-      proxyReq.ttpsetHeader('Cache-Control', 'no-store')
-      proxyReq.setHeader('Referrer-Policy', 'unsafe-url')
-      console.log(`Proxy request start at ${currentTime}:`, req.rawHeaders[1])
-      const destinationCerts = certTarget.cert
-      const sourceCert = await getCertificateFromSourceURL(req.rawHeaders)
-      if (DEBUG_LEVEL > 0) console.log(`Source certificate:`, sourceCert)
-
-      res.setHeader('Referrer-Policy', 'unsafe-url')
-
-      if (DEBUG_LEVEL > 0) console.log(`Combined certificate:`, combinedCerts)
-      options.agent = new https.Agent({
-        pfx: Buffer.from(combinedCerts, 'utf-8'),
-      })
-
-      if (sourceCert?.raw) {
-        const sourcePemCertificate = await derToPem(sourceCert.raw)
-        if (DEBUG_LEVEL > 0) console.log('sourcePemCertificate', sourcePemCertificate)
-
-        const combinedCerts = `${sourcePemCertificate}\n${destinationCerts}`
-        res.write(combinedCerts)
-
-      }
-      res.end()
-      console.log(`Proxy request end at ${currentTime}:`, req.url)
-    } catch (error) {
-      console.error(`Error while getting source certificate:`, error);
-    }
-  })
 
   if (DEBUG_LEVEL > 3) {
     proxy.on('proxyRes', function (proxyRes, req, res) {
@@ -81,5 +49,3 @@ for (const netData of data) {
     console.log(`Proxy server listening at ${currentTime} on https://${netData.server_node}:${netData.port}`)
   })
 }
-
-
