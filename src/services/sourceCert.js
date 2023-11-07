@@ -12,11 +12,9 @@ async function derToPem(der) {
 
 async function getCertificateFromSourceURL(rawHeaders) {
   const DEBUG_LEVEL = Number(process.env.DEBUG_LEVEL) || 0
-  const port0 = 8080
   const port = 8181
 
-  const website0 = rawHeaders[1].replace(`:${port0}`, '')
-  let website = website0.replace(`:${port}`, '')
+  let website = rawHeaders[1].replace(`:${port}`, '')
 
   if (DEBUG_LEVEL >= 3) {
     website = process.env.TEST_WEBSITE
