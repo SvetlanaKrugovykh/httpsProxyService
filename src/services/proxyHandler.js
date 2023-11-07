@@ -3,10 +3,11 @@ require('dotenv').config()
 const { getCertificateFromSourceURL, derToPem } = require('./sourceCert.js')
 const { certTarget } = require('../data/netData.js')
 
-async function handleProxyRequest(proxy, req, res, options) {
+async function handleProxyRequest(proxy, req, res, options, netData) {
   try {
     const currentTime = new Date().toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' })
     const DEBUG_LEVEL = Number(process.env.DEBUG_LEVEL) || 0
+    const Location = netData.target + netData.target_page
 
     console.log(`Proxy request start at ${currentTime}:`, req.rawHeaders[1])
 
@@ -26,8 +27,12 @@ async function handleProxyRequest(proxy, req, res, options) {
       // res.writeHead(302, {
       //   'Location': 'about:blank'
       // })
-      res.setHeader('Referrer-Policy', 'unsafe-url')
-      res.write(combinedCerts)
+
+      // res.setHeader('Referrer-Policy', 'unsafe-url')
+      // res.write(combinedCerts)
+      res.writeHead(302, {
+        'Location': Location,
+      })
 
       res.end()
     } else {

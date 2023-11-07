@@ -21,7 +21,7 @@ for (const netData of data) {
       target: netData.target,
       port: netData.target_port,
       secure: true,
-    })
+    }, netData)
   })
 
   if (DEBUG_LEVEL > 0) {
