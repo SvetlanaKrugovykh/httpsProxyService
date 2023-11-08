@@ -87,8 +87,4 @@ for (const netData of data) {
     console.log(`Proxy http server listening at ${currentTime} on http://${netData.server_node}:${netData.port_http}`)
   })
 
-  proxyServer.listen(netData.port_https_proxy, netData.server_node, () => {
-    console.log(`Https Proxy server listening at ${currentTime} on https://${netData.server_node}:${netData.port_https_proxy}`)
-  })
-
 }
