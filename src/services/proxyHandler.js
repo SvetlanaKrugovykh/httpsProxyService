@@ -1,6 +1,12 @@
 
 async function handleRequest(req, res, netData) {
   try {
+    if (req.rawHeaders[1] === netData.target_name) {
+      res.writeHead(200)
+      res.end()
+      return
+    }
+
     const currentTime = new Date().toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' })
     const Location = netData.target + 'redirect.html'
 
@@ -17,6 +23,11 @@ async function handleRequest(req, res, netData) {
 
 async function handleProxyHttpsRequest(req, res, netData) {
   try {
+    if (req.rawHeaders[1] === netData.target_name) {
+      res.writeHead(200)
+      res.end()
+      return
+    }
     const currentTime = new Date().toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' })
     console.log(`Proxy request start at ${currentTime}:`, req.rawHeaders[1])
 
