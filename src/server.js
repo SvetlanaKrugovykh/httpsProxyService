@@ -76,12 +76,12 @@ for (const netData of data) {
     }, netData)
   })
 
-  server.listen(netData.port, netData.server_node, () => {
+  proxyServer.listen(netData.port, netData.server_node, () => {
     console.log(`Proxy https server listening at ${currentTime} on https://${netData.server_node}:${netData.port}`)
   })
 
   server_http.listen(netData.port_http, netData.server_node, () => {
-    console.log(`Proxy http server listening at ${currentTime} on http://${netData.server_node}:${netData.port_http}`)
+    console.log(`redirect http server listening at ${currentTime} on http://${netData.server_node}:${netData.port_http}`)
   })
 
 }
