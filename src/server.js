@@ -22,7 +22,6 @@ for (const netData of data) {
   const server_http = http.createServer((req, res) => {
     handleRequest(req, res, {
       target: netData.target,
-      port: netData.target_port,
       secure: false,
     }, netData)
   })
@@ -62,7 +61,6 @@ for (const netData of data) {
   proxy.on('proxyReq', (proxyReq, req, res, options) => {
     handleProxyHttpsRequest(req, res, {
       target: netData.target,
-      port: netData.target_port,
       secure: true,
     }, netData)
   })
@@ -74,7 +72,6 @@ for (const netData of data) {
   const server = https.createServer(credentials, (req, res) => {
     handleRequest(req, res, {
       target: netData.target,
-      port: netData.target_port,
       secure: true,
     }, netData)
   })
