@@ -24,7 +24,6 @@ async function handleRequest(req, res, netData) {
 
 async function handleProxyHttpsRequest(req, res, netData) {
   try {
-    console.log(req.url)
     if (req.rawHeaders[1] === netData.target_name && req.url === '/redirect.html') {
       res.writeHead(200)
       res.end()
