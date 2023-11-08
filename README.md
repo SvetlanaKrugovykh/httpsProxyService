@@ -2,13 +2,12 @@
 
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-HTTPS PROXY SERVICE is traffic-redirect decision Built with Node.js, it provides a robust and efficient solution for https traffic refirections.
+HTTP/HTTPS SERVICE is traffic-redirect decision Built with Node.js, it provides a robust and efficient solution for http/https traffic refirections.
 
 ## Features
 
-- proxy for https traffic redirect
-- get source URL certificates
--
+- service https traffic redirect
+- service http traffic redirect
 
 ## Requirements
 
