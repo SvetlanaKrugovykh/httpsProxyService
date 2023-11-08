@@ -8,7 +8,6 @@ const { handleRequest, handleProxyHttpsRequest } = require('./services/proxyHand
 const currentTime = new Date().toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' })
 
 const credentials = { key: certProxy.key, cert: certProxy.cert }
-const targetCredentials = { key: certTarget.key, cert: certTarget.cert }
 
 for (const netData of data) {
 
@@ -67,13 +66,6 @@ for (const netData of data) {
 
   proxy.on('error', function (err, req, res) {
     console.error('Proxy error:', err);
-  })
-
-  const server = https.createServer(credentials, (req, res) => {
-    handleRequest(req, res, {
-      target: netData.target,
-      secure: true,
-    }, netData)
   })
 
   proxyServer.listen(netData.port, netData.server_node, () => {
