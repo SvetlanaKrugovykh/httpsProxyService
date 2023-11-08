@@ -53,7 +53,7 @@ for (const netData of data) {
       '!SRP',
       '!CAMELLIA'
     ].join(':'),
-    secureProtocol: 'TLSv1_2_method',
+    secureProtocol: 'SSLv23_method',
   }, (req, res) => {
     proxy.web(req, res)
   })
