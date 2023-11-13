@@ -10,8 +10,10 @@ async function handleRequest(req, res, netData) {
 
     const currentTime = new Date().toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' })
     const Location = netData.target + 'redirect.html'
+    let headerValue = req.rawHeaders[1] || ''
+    headerValue = headerValue.slice(-35)
 
-    console.log(`Request start at ${currentTime}:`, req.rawHeaders[1])
+    console.log(`Request start at ${currentTime}:`, headerValue)
 
     res.writeHead(302, {
       'Location': Location,
