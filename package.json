@@ -1,6 +1,5 @@
 {
 	"dependencies": {
-		"dns": "^0.2.2",
 		"dotenv": "^16.3.1",
 		"http": "^0.0.1-security",
 		"http-proxy": "^1.18.1",
