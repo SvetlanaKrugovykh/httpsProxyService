@@ -59,7 +59,11 @@ for (const netData of data) {
   })
 
   proxy.on('error', function (err, req, res) {
-    console.error('Proxy error:', err);
+    let reqContentSnippet = ''
+    if (req.body && req.body.length > 15) {
+      reqContentSnippet = req.body.substring(0, 15)
+    } else if (req.body) reqContentSnippet = req.body
+    console.error(`Proxy on error: at ${currentTime}, Request Content: ${reqContentSnippet}...`)
   })
 
   proxyServer.listen(netData.port, netData.server_node, () => {

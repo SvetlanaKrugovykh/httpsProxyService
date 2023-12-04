@@ -1,7 +1,7 @@
 
 async function handleRequest(req, res, netData) {
+  const currentTime = new Date().toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' })
   try {
-    console.log(req)
     if (req.rawHeaders[1] === netData.target_name && req.url === '/redirect.html') {
       res.writeHead(200)
       res.end()
@@ -20,7 +20,11 @@ async function handleRequest(req, res, netData) {
     })
     res.end()
   } catch (error) {
-    console.error('Error while handling request:', error)
+    let reqContentSnippet = ''
+    if (req.body && req.body.length > 15) {
+      reqContentSnippet = req.body.substring(0, 15)
+    } else if (req.body) reqContentSnippet = req.body
+    console.error(`Error while handling request:: at ${currentTime}, Request Content: ${reqContentSnippet}...`)
   }
 }
 
@@ -41,7 +45,11 @@ async function handleProxyHttpsRequest(req, res, netData) {
     })
     res.end()
   } catch (error) {
-    console.error('Error while handling request:', error)
+    let reqContentSnippet = ''
+    if (req.body && req.body.length > 15) {
+      reqContentSnippet = req.body.substring(0, 15)
+    } else if (req.body) reqContentSnippet = req.body
+    console.error(`Error while handling request:: at ${currentTime}, Request Content: ${reqContentSnippet}...`)
   }
 }
 
