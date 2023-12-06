@@ -21,10 +21,10 @@ async function handleRequest(req, res, netData) {
     res.end()
   } catch (error) {
     let reqContentSnippet = ''
-    if (req.body && req.body.length > 15) {
-      reqContentSnippet = req.body.substring(0, 15)
+    if (req.body && req.body.length > 35) {
+      reqContentSnippet = req.body.substring(0, 35)
     } else if (req.body) reqContentSnippet = req.body
-    console.error(`Error while handling request:: at ${currentTime}, Request Content: ${reqContentSnippet}...`)
+    if (DEBUG_LEVEL > 0) console.error(`Error while handling request:: at ${currentTime}, Request Content: ${reqContentSnippet}...`)
   }
 }
 
@@ -46,10 +46,10 @@ async function handleProxyHttpsRequest(req, res, netData) {
     res.end()
   } catch (error) {
     let reqContentSnippet = ''
-    if (req.body && req.body.length > 15) {
-      reqContentSnippet = req.body.substring(0, 15)
+    if (req.body && req.body.length > 35) {
+      reqContentSnippet = req.body.substring(0, 35)
     } else if (req.body) reqContentSnippet = req.body
-    console.error(`Error while handling request:: at ${currentTime}, Request Content: ${reqContentSnippet}...`)
+    if (DEBUG_LEVEL > 0) console.error(`Error while handling request:: at ${currentTime}, Request Content: ${reqContentSnippet}...`)
   }
 }
 
